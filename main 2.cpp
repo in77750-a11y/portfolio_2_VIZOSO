@@ -1,25 +1,24 @@
 //
 //  main.cpp
-//  Portfolio Dungeon
+//  GRID prototype 2
 //
-//  Created by Andres Vizoso on 2/9/26.
+//  Created by Andres Vizoso on 4/16/26.
 //
 
 #include <iostream>
 #include <vector>
-#include <cmath>
 
 using namespace std;
 
-struct Player {
-
+class Player {
+public:
     string name = "Henry";
     int player_strength;
     int player_Hearts;
     int player_defense;
     int keys;
-    
 
+    
     Player(string n){
         name = n;
         player_strength = 3;
@@ -37,18 +36,39 @@ struct Player {
         keys = 0;
     }
     
+    int get_keys(){
+        return keys;
+    }
+    
+    int get_player_Hearts(){
+        return player_Hearts;
+    };
+    
+    int get_player_defense(){
+        return player_defense;
+    }
+    
+    int get_player_strength(){
+        return player_strength;
+    };
+    
+    void pretty_print_Player(){
+            cout << "Meet your Wizard: " << name << endl;
+            cout << "Stats: " << endl;
+            cout << "Hearts: " << player_Hearts << endl;
+            cout << "Strength: " << player_strength << endl;
+            cout << "defense: " << player_defense << endl;
+            cout << "Keys: " << keys << endl;
+            //cout << "potion of Health: ";
+            
+        }
+    int getting_one_key(){
+        return ++keys;
+        }
+    
 };
 
-void pretty_print_Player(const Player p){
-        cout << "Meet your Wizard: " << p.name << endl;
-        cout << "Stats:  " ;
-        cout << "Hearts: " << p.player_Hearts << "  ";
-        cout << "Strength: " << p.player_strength << "  ";
-        cout << "defense: " << p.player_defense << "  ";
-        cout << "Keys: " << p.keys << endl;
-        //cout << "potion of Health: ";
-        
-    }
+
 struct Enemy_RUNT{
     int Enemy_Hearts;
     int Enemy_Strength;
@@ -58,20 +78,6 @@ struct Enemy_RUNT{
             Enemy_Hearts = 1;
             Enemy_Strength = 1;
             Enemy_Defense = 1;
-            
-        }
-        
-};
-
-struct Enemy_Brute{
-    int Brute_Hearts;
-    int Brute_Strength;
-    int Brute_Defense;
-
-    Enemy_Brute(){
-            Brute_Hearts = 3;
-            Brute_Strength = 3;
-            Brute_Defense = 3;
             
         }
         
@@ -102,10 +108,10 @@ void Enemy_print(const Enemy_RUNT enemy){
 
 bool battle(Player player, Enemy_RUNT enemy) {
     cout << "you've encountered an enemy!" << endl;
-    while (player.player_Hearts > 0 && enemy.Enemy_Hearts > 0) {
+    while (player.get_player_Hearts() > 0 && enemy.Enemy_Hearts > 0) {
         
         
-        int damage = player.player_strength - enemy.Enemy_Defense;
+        int damage = player.get_player_strength() - enemy.Enemy_Defense;
         if (damage > 0) {
             enemy.Enemy_Hearts -= damage;
             cout << "You deal " << damage << " damage to the enemy. Enemy health: " << enemy.Enemy_Hearts << endl;
@@ -118,14 +124,15 @@ bool battle(Player player, Enemy_RUNT enemy) {
         }
         
         
-        damage = enemy.Enemy_Strength - player.player_defense;
+        damage = enemy.Enemy_Strength - player.get_player_defense();
         if (damage > 0) {
-            player.player_Hearts -= damage;
-            cout << "Enemy deals " << damage << " damage to you. Your health: " << player.player_Hearts << endl;
+            int player_hearts = player.get_player_Hearts();
+            player_hearts -= damage;
+            cout << "Enemy deals " << damage << " damage to you. Your health: " << player.get_player_Hearts() << endl;
         } else {
             cout << "Enemy's attack does no damage." << endl;
         }
-        if (player.player_Hearts <= 0) {
+        if (player.get_player_Hearts() <= 0) {
             cout << "You were defeated! Game Over." << endl;
             return false;
         }
@@ -135,10 +142,10 @@ bool battle(Player player, Enemy_RUNT enemy) {
 
 bool GIANT_battle(Player player, Enemy_GIANT enemy) {
     cout << "you've encountered an enemy!" << endl;
-    while (player.player_Hearts > 0 && enemy.GIANT_Hearts > 0) {
+    while (player.get_player_Hearts() > 0 && enemy.GIANT_Hearts > 0) {
         
         
-        int damage = player.player_strength - enemy.GIANT_Defense;
+        int damage = player.get_player_strength() - enemy.GIANT_Defense;
         if (damage > 0) {
             enemy.GIANT_Hearts -= damage;
             cout << "You deal " << damage << " damage to the enemy. Enemy health: " << enemy.GIANT_Hearts << endl;
@@ -151,14 +158,15 @@ bool GIANT_battle(Player player, Enemy_GIANT enemy) {
         }
         
         
-        damage = enemy.GIANT_Strength - player.player_defense;
+        damage = enemy.GIANT_Strength - player.get_player_defense();
         if (damage > 0) {
-            player.player_Hearts -= damage;
-            cout << "Enemy deals " << damage << " damage to you. Your health: " << player.player_Hearts << endl;
+            int player_hearts = player.get_player_Hearts();
+            player_hearts -= damage;
+            cout << "Enemy deals " << damage << " damage to you. Your health: " << player.get_player_Hearts() << endl;
         } else {
             cout << "Enemy's attack does no damage." << endl;
         }
-        if (player.player_Hearts <= 0) {
+        if (player.get_player_Hearts() <= 0) {
             cout << "You were defeated! Game Over." << endl;
             return false;
         }
@@ -166,554 +174,537 @@ bool GIANT_battle(Player player, Enemy_GIANT enemy) {
     return false;
 }
 
-bool Brute_battle(Player player, Enemy_Brute brute) {
-    cout << "you've encountered an enemy!" << endl;
-    while (player.player_Hearts > 0 && brute.Brute_Hearts > 0) {
-        
-        
-        int damage = player.player_strength - brute.Brute_Defense;
-        if (damage > 0) {
-            brute.Brute_Hearts -= damage;
-            cout << "You deal " << damage << " damage to the enemy. Enemy health: " << brute.Brute_Hearts << endl;
-        } else {
-            cout << "Your attack does no damage." << endl;
-        }
-        if (brute.Brute_Hearts <= 0) {
-            cout << "You defeated the enemy!" << endl;
-            return true;
-        }
-        
-        
-        damage = brute.Brute_Strength - player.player_defense;
-        if (damage > 0) {
-            player.player_Hearts -= damage;
-            cout << "Enemy deals " << damage << " damage to you. Your health: " << player.player_Hearts << endl;
-        } else {
-            cout << "Enemy's attack does no damage." << endl;
-        }
-        if (player.player_Hearts <= 0) {
-            cout << "You were defeated! Game Over." << endl;
-            return false;
-        }
-    }
-    return false;
-}
-//======================================================================================================================
 
-class Dungeon {
+
+class GridGame {
+private:
+    string name;
     int rows, cols;
-    vector<vector<int>> grid;
-    
+    int playerX, playerY;
+    vector<vector<char>> grid;
+
 public:
-    void display(){
+    
+    Player P = Player("Henry");
+    Enemy_RUNT E;
+    
+    GridGame(int r, int c, string n, int player_place_X, int player_place_Y) {
+        rows = r;
+        cols = c;
+        playerX = player_place_X;
+        playerY = player_place_Y;
+        name = n;
+        grid = vector<vector<char>>(r, vector<char>(c, '-'));
+    }
+    
+    GridGame() {
+        
+    }
+    
+    int get_playerX(){
+        return playerX;
+    }
+    
+    int get_playerY(){
+        return playerY;
+    }
+    
+    string get_Name(){
+        return name;
+    }
+    
+    int get_rows(){
+        return rows;
+    }
+    
+    int get_cols(){
+        return cols;
+    }
+    
+    void set_name(const string& n){
+        name = n;
+    }
+    
+    void setTile(int r, int c, char type) {
+        grid[r][c] = type;
+    }
+    
+    void initialize(){
+        setTile(playerX, playerY, '$');
+        
+        //grid[3][3] = '#';
+        setTile(3, 3, '#');
+       
+        setTile(4, 3, 'K');
+    }
+    
+    Player get_Player_P(){
+        return P;
+    }
+    
+    bool move(char direction) {
+            int nextX = playerX, nextY = playerY;
+
+            // Determine new potential coordinates
+            if (direction == 'w') nextX--;      // Up
+            else if (direction == 's') nextX++; // Down
+            else if (direction == 'a') nextY--; // Left
+            else if (direction == 'd') nextY++; // Right
+            else return false; // Invalid input
+        
+        if (nextX >= 0 && nextX < rows && nextY >= 0 && nextY < cols) {
+            
+            
+            if (grid[nextX][nextY] == '#'){
+              
+            return false;
+        }
+            
+            if(grid[nextX][nextY] == 'K'){
+                P.keys++;
+                cout << "Collect one key." << endl;
+                
+                grid[playerX][playerY] = '-';
+                        playerX = nextX;
+                        playerY = nextY;
+                grid[playerX][playerY] = '$';
+                return true;
+            }
+            grid[playerX][playerY] = '-';  // Clear old position
+            playerX = nextX;
+            playerY = nextY;
+            grid[playerX][playerY] = '$';
+            
+        }//barrier
+            return false; // Move out of bounds
+    }
+    
+    
+    void display_for_normal() {
+        
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 cout << grid[r][c] << "   ";
             }
             cout << endl;
+        }// grid
+    }
+
+    
+    void display_for_dungeon_creation(){
+        
+        
+        for (int i = 1; i <= rows; i++){
+            cout << "      " << i;
         }
         
+        cout << endl;
+        
+        string dashes = string(rows + 45, '-');
+        
+        cout << dashes << endl;
+        
+        
+        
+        vector<char> row;
+        
+        char alphabet_start = '1';
+        
+        for (vector<char> row : grid) {
+            cout << alphabet_start << '|';
+            alphabet_start += 1;
+            for (char c : row) {
+                cout << "    " << c << "  " ;
+            }
+            cout << endl;
+        }
     }
+    
+    
 };
 
-const int ROWS = 5;
-const int COLS = 5;
-
-const int ROWS_2 = 8;
-const int COLS_2 = 8;
-
-// Function to print the grid
-void print_Grid(char grid[ROWS][COLS]) {
+GridGame initialization_for_1(){
+    GridGame dungeon_1 = GridGame(5, 5, "Dungeon 1", 1, 1);
+    dungeon_1.setTile(dungeon_1.get_playerX(), dungeon_1.get_playerY(), '$');
     
-
-    for (int r = 0; r < ROWS; r++) {
-        for (int c = 0; c < COLS; c++) {
-            cout << grid[r][c] << "   ";
-        }
-        cout << endl;
-    }
+    
+    dungeon_1.setTile(3, 3, '#');
+   
+    dungeon_1.setTile(4, 3, 'K');
+    return dungeon_1;
 }
 
-void print_new_Grid(char grid[ROWS_2][COLS_2]) {
+GridGame initialization_for_Tutorial(){
+    GridGame dungeon_1 = GridGame(5, 5, "Tutorial", 1, 1);
+    dungeon_1.setTile(dungeon_1.get_playerX(), dungeon_1.get_playerY(), '$');
     
-
-    for (int r = 0; r < ROWS_2; r++) {
-        for (int c = 0; c < COLS_2; c++) {
-            cout << grid[r][c] << "   ";
-        }
-        cout << endl;
-    }
+    
+    dungeon_1.setTile(3, 3, '#');
+   
+    dungeon_1.setTile(4, 3, 'K');
+    return dungeon_1;
 }
 
-
-// Function to move the character
-bool move_Character(char grid[ROWS][COLS], int& char_X, int& char_Y, string moveInput, Player& P) {
+void playing_dungeon(GridGame g){
     
-    int newX = char_X;
-    int newY = char_Y;
 
-    if (moveInput == "w" || moveInput == "Up" || moveInput == "up") newX--; // Up
-    else if (moveInput == "s"|| moveInput == "Down" || moveInput == "down") newX++; // Down
-    else if (moveInput == "a" || moveInput == "Left" || moveInput == "left") newY--; // Left
-    else if (moveInput == "d" || moveInput == "Right" || moveInput == "right") newY++; // Right
+    char userInput;
     
-    char target = grid[newX][newY];
-
-    // Check boundaries
-    if (newX >= 0 && newX < ROWS && newY >= 0 && newY < COLS) {
-        // Check if the new position is a barrier
-        if (target == '#') {
-            
-            return false; // Cannot move, it's a barrier
-            
-        }
-        else if(target == 'E'){
-            Player p = Player("Henry");
-            
-            
-            Enemy_RUNT E = Enemy_RUNT();
-            battle(p, E);
-            
+    while (true) {
+        cout << "=================================" << endl;
+        
+                g.display_for_normal();
+        g.get_Player_P().pretty_print_Player();
+        
+        
+        cout << "Enter move (w/a/s/d or q to quit): ";
+        cin >> userInput;
+        
+        if (userInput == 'q') {
+            cout << "Exiting game." << endl;
+            break;
         }
         
-        else if(target == 'K'){
-            P.keys++;
-            grid[char_X][char_Y] = 'K';
-            char_X = newX;
-            char_Y = newY;
-            grid[char_X][char_Y] = '$';
-            grid[4][3] = '-';
-            grid[3][4] = '-';
-            //grid[4][4] = '-';
-            return true;
-        }
-        
-        else if(target == 'L'){
-            
-            if(P.keys > 0){
-                P.keys--;
-                grid[char_X][char_Y] = 'L';
-                char_X = newX;
-                char_Y = newY;
-                grid[char_X][char_Y] = '$';
-                grid[3][4] = '-';
-                grid[2][3] = '-';
-                 return true;
-            }
-            else{
-                return false;
-            }
-        }
-        
-        else if(target == '!'){
-            
-            Player p = Player("Henry");
-            
-            Enemy_GIANT EG = Enemy_GIANT();
-            GIANT_battle(p, EG);
-            
-            grid[char_X][char_Y] = '!';
-            char_X = newX;
-            char_Y = newY;
-            grid[char_X][char_Y] = '$';
-            grid[2][4] = '-';
-            
-            //key.pretty_print(key.get_hearts(), key.get_strength(), key.get_defense(), key.get_keys());
-            return true;
-        }
-        
-        else if(target == 'P'){
-            P.player_strength += 5;
-            P.player_defense += 5;
-            grid[char_X][char_Y] = 'P';
-            char_X = newX;
-            char_Y = newY;
-            grid[char_X][char_Y] = '$';
-            grid[4][1] = '-';
-            
-            
-            //key.pretty_print(key.get_hearts(), key.get_strength(), key.get_defense(), key.get_keys());
-            return true;
-        }
-        
-        grid[char_X][char_Y] = '-';
-        char_X = newX;
-        char_Y = newY;
-        grid[char_X][char_Y] = '$'; // 'C' for Character
-
-        return true; // Can move
+        g.move(userInput);
     }
-    return false; // Out of bounds
-    // If movement is invalid, character stays in place
+    
 }
 
-bool move_Character_new(char grid[ROWS_2][COLS_2], int& char_X, int& char_Y, string moveInput, Player& P) {
+GridGame editing_dungeon(GridGame Updating_grid){
     
-    int newX = char_X;
-    int newY = char_Y;
-
-    if (moveInput == "w" || moveInput == "Up" || moveInput == "up") newX--; // Up
-    else if (moveInput == "s"|| moveInput == "Down" || moveInput == "down") newX++; // Down
-    else if (moveInput == "a" || moveInput == "Left" || moveInput == "left") newY--; // Left
-    else if (moveInput == "d" || moveInput == "Right" || moveInput == "right") newY++; // Right
-    
-    char target = grid[newX][newY];
-
-    // Check boundaries
-    if (newX >= 0 && newX < ROWS_2 && newY >= 0 && newY < COLS_2) {
-        // Check if the new position is a barrier
-        if (target == '#') {
-            
-            return false; // Cannot move, it's a barrier
-            
-        }
-        else if(target == 'E'){
-            
-            
-            
-            Enemy_RUNT E = Enemy_RUNT();
-            battle(P, E);
-            
-        }
-        
-        else if(target == 'K'){
-            P.keys++;
-            grid[char_X][char_Y] = 'K';
-            char_X = newX;
-            char_Y = newY;
-            grid[char_X][char_Y] = '$';
-            grid[6][3] = '-';
-            grid[5][2] = '-';
-            return true;
-        }
-        
-        else if(target == 'L'){
-            
-            if(P.keys > 0){
-                P.keys--;
-                grid[char_X][char_Y] = 'L';
-                char_X = newX;
-                char_Y = newY;
-                grid[char_X][char_Y] = '$';
-                
-                grid[2][4] = '-';
-                 return true;
-            }
-            else{
-                return false;
-            }
-        }
-        
-        else if(target == '!'){
-            
-            
-            
-            Enemy_GIANT EG = Enemy_GIANT();
-            GIANT_battle(P, EG);
-            
-            grid[char_X][char_Y] = '!';
-            char_X = newX;
-            char_Y = newY;
-            grid[char_X][char_Y] = '$';
-            grid[2][4] = '-';
-            
-            return true;
-        }
-        
-        else if(target == 'P'){
-            P.player_strength += 5;
-            P.player_defense += 5;
-            grid[char_X][char_Y] = 'P';
-            char_X = newX;
-            char_Y = newY;
-            grid[char_X][char_Y] = '$';
-            grid[4][1] = '-';
-        
-            return true;
-        }
-        
-        else if(target == 'B'){
-            Enemy_Brute b = Enemy_Brute();
-            Brute_battle(P, b);
-            
-            grid[char_X][char_Y] = 'B';
-            char_X = newX;
-            char_Y = newY;
-            grid[char_X][char_Y] = '$';
-            
-            grid[4][2] = '-';
-            grid[2][2] = '-';
-            grid[1][1] = '-';
-            grid[5][3] = '-';
-            grid[6][4] = '-';
-            
-        }
-        
-        grid[char_X][char_Y] = '-';
-        char_X = newX;
-        char_Y = newY;
-        grid[char_X][char_Y] = '$'; // 'C' for Character
-
-        return true; // Can move
-    }
-    return false; // Out of bounds
-    // If movement is invalid, character stays in place
-}
-
-void display_for_dungeon_creation(int r, int c){
-    vector<vector<char>> grid (r, vector<char> (c, '-'));
-    
-    for (int i = 1; i <= r; i++){
-        cout << "      " << i;
-    }
-    
-    cout << endl;
-    
-    string dashes = string(r + 40, '-');
-    
-    cout << dashes << endl;
-    
-    //string letters = "";
-    
-    vector<char> row;
-    
-    char alphabet_start = '1';
-    
-    for (vector<char> row : grid) {
-        cout << alphabet_start << '|';
-        alphabet_start += 1;
-        for (char c : row) {
-            cout << "    " << c << "  " ;
-        }
-        cout << endl;
-    }
-}
-
-
-void Designing_Dungeon(){
-
-    cout << "Enter number of rows: ";
-            int rows;
-            cin >> rows;
-            cout << "Enter number of columns: ";
-            int cols;
-            cin >> cols;
-            cout << endl;
-    
+    Updating_grid.display_for_dungeon_creation();
+    bool loop_updating = false;
     bool editing = true;
-    while (editing) {
+    while(editing){
         cout << endl;
-        display_for_dungeon_creation(rows, cols);
+        Updating_grid.display_for_dungeon_creation();
         cout << endl;
         cout << "Actions:" << endl;
         cout << "1) Add object" << endl;
         cout << "2) Save dungeon" << endl;
         cout << "Select action: ";
         string action;
-        cin >> action;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        getline(cin, action);
         
-        if(action == "1" || action == "add object" || action == "Add object"){
-            cout << "Objects:" << endl;
+        if(cin.fail()){
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            loop_updating = false;
+            cout << "invalid input!" << endl;
+            cout << endl;
+        }
+        
+        else if(action == "1" || action == "Add object" || action == "add object"){
+            
+            char object_choosen;
+            do {
+            cout << endl;
+            cout << "Choose what to add for the dungeon:" << endl;
             cout << "1) Empty Space" << endl;
             cout << "2) Wall" << endl;
-            cout << "3) Player" << endl;
-            cout << "4) Goal" << endl;
-            cout << "5) Key" << endl;
-            cout << "6) Locked Door" << endl;
+            cout << "3) Goal" << endl;
+            cout << "4) Key" << endl;
+            cout << "5) Locked Door" << endl;
             cout << "7) Enemy" << endl;
             cout << "8) Health Potion" << endl;
             cout << "9) Strength Potion" << endl;
-            cout << "10) Defense Potion" << endl;
-            cout << "Choose what you want to place" << endl;
+            cout << "9) Defense Potion" << endl;
+            cout << "10) Player" << endl;
+            cout << "Select object by number or name: ";
+            string choice;
+            getline(cin, choice);
+            
+            
+                if (choice == "1" || choice == "Empty Space"){
+                    loop_updating = true;
+                    object_choosen = '-';
+                }
+                else if (choice == "2" || choice == "Wall"){
+                    loop_updating = true;
+                    object_choosen = '#';
+                }
+                else if (choice == "3" || choice == "Goal"){
+                    loop_updating = true;
+                    object_choosen = 'G';
+                }
+                else if (choice == "4" || choice == "Key"){
+                    loop_updating = true;
+                    object_choosen = 'K';
+                }
+                else if (choice == "5" || choice == "Locked Door"){
+                    loop_updating = true;
+                    object_choosen = 'L';
+                }
+                else if (choice == "6" || choice == "Enemy"){
+                    loop_updating = true;
+                    object_choosen = 'E';
+                }
+                else if (choice == "7" || choice == "Health Potion"){
+                    loop_updating = true;
+                    object_choosen = 'H';
+                }
+                else if (choice == "8" || choice == "Strength Potion"){
+                    loop_updating = true;
+                    object_choosen = 'S';
+                }
+                else if (choice == "9" || choice == "Defense Potion") {
+                    loop_updating = true;
+                    object_choosen = 'D';
+                }
+                else if (choice == "10" || choice == "Player"){
+                    loop_updating = true;
+                    object_choosen = '$';
+                }
+            else {
+                loop_updating = false;
+                cout << "Invalid object." << endl;
+            }
+                
+        }while(!loop_updating);
+            
+            do {
+                cout << "Enter the coordinates in (x,y) format: ";
+                int x, y;
+                char parenth1_for_obj_choosen = '(';
+                char parenth2_for_obj_choosen = ')';
+                char comma_for_obj_choosen = ',';
+                cin >> parenth1_for_obj_choosen >> x >> comma_for_obj_choosen >> y >> parenth2_for_obj_choosen;
+                
+                if(cin.fail()){
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    loop_updating = false;
+                    cout << "Invalid coordinates!" << endl;
+                    cout << endl;
+                }
+                else{
+                    loop_updating = true;
+                Updating_grid.setTile(x-1, y-1, object_choosen);
+                }
+            } while (!loop_updating);
 
         }
-        
+    
+        else if (action == "2" || action == "Save dungeon" || action == "save dungeon"){
+            
+            cout << "Enter dungeon name: ";
+            string name;
+            getline(cin, name);
+            Updating_grid.set_name(name);
+            editing = false;
+        }
         
     }
     
-    
-    
-
-
+    return Updating_grid;
 }
 
+GridGame creating_a_dungeon(){
+    
+    int rows_C, cols_C;
+    bool loop = false;
+    do {
+        
+        cout << endl;
+        cout << "Enter rows: ";
+        cin >> rows_C;
+        
+        if (cin.fail() || rows_C < 1) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            loop = false;
+            cout << "\nInvalid row. Please enter an integer" << endl;
+        }
+        else {
+            loop = true;
+        }
+    } while (!loop);
+        
+    
+        cout << endl;
+        cout << endl;
+        
+    do {
+        cout << "Enter colums: ";
+        cin >> cols_C;
 
-void enter_A_dungeon(){
-    //================================================================ dungeon 1 beginning
-    char grid[ROWS][COLS];
-    
-    for(int i = 0; i < ROWS; i++){
-        for (int i2 = 0; i2 < COLS; i2++) {
-            grid[i][i2] = '-';
+        if (cin.fail()|| cols_C < 1) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            loop = false;
+            cout << "\nInvalid column. Please enter an integer" << endl;
         }
-    }
-    
-    // Initial character position
-    
-    int playerX = 1;
-    int playerY = 1;
-    
-    
-    //to the right
-    grid[playerX][playerY] = '$';
-    grid[0][0] = '#';
-    grid[0][1] = '#';
-    grid[0][2] = '#';
-    grid[0][3] = '#';
-    grid[0][4] = 'G';
-    //==============================
-    //down
-    grid[0][0] = '#';
-    grid[1][0] = '#';
-    grid[2][0] = '#';
-    grid[3][0] = '#';
-    grid[4][0] = 'P';
-    //===============================
-    
-    grid[1][3] = '#';
-    grid[2][4] = 'L';
-    
-    
-    grid[3][2] = '#';
-    grid[3][1] = '#';
-    grid[2][3] = '-';
-    grid[1][4] = '!';
-    
-    string userInput;
-    
-    grid[4][4] = 'K';
-    
-    grid[4][1] = 'E';
-    
-    //==========================================================================
-    
-    
-    
-    //cout << "=======================================" << endl;
-    //print_Grid(grid);
-    
-    
-    cout << endl;
-    Player P = Player("Henry");
-    //pretty_print_Player(P);
-    cout << endl;
-    while (true) {
-        cout << "=================================" << endl;
-        
-        print_Grid(grid);
-        pretty_print_Player(P);
-        cout << "Enter move (w/a/s/d or q to quit): ";
-        cin >> userInput;
-        
-        if (userInput == "q") {
-            cout << "Exiting game." << endl;
-            break;
+        else {
+            loop = true;
         }
+    } while (!loop);
         
-        move_Character(grid, playerX, playerY, userInput, P);
-        //===========================================================================dungeon 1 end
+    cout << endl;
+    cout << endl;
+    
+    
+
+    int p_x, p_y;
+    do {
+        cout << "Enter the coordinates in (x,y) format (along with parenthesis) for your player: ";
+        char parenth1 = '(';
+        char parenth2 = ')';
+        char comma = ',';
+        cin >> parenth1 >> p_x >> comma >> p_y >> parenth2;
         
-        if(grid[playerX][playerY] == grid[0][4]){
+        if (cin.fail()|| p_x < 1 || p_y < 1 || p_x > rows_C || p_y > cols_C) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            loop = false;
+            cout << "\nInvalid column. Please enter an integer" << endl;
+        }
+        else {
+            loop = true;
             
-            {//cout << "GAME END!" << endl;
-                char new_grid[ROWS_2][COLS_2];
-                
-                for(int r = 0; r < ROWS_2; r++){
-                    for (int r2 = 0; r2 < COLS_2; r2++) {
-                        new_grid[r][r2] = '-';
-                    }
+        }
+    } while (!loop);
+    
+    
+    GridGame creating_dungeon = GridGame(rows_C, cols_C, "Custom", p_x - 1, p_y - 1);
+        creating_dungeon.setTile(p_x - 1, p_y - 1, '$');
+    
+    bool editing = true;
+    while(editing){
+        cout << endl;
+        creating_dungeon.display_for_dungeon_creation();
+        cout << endl;
+        cout << "Actions:" << endl;
+        cout << "1) Add object" << endl;
+        cout << "2) Save dungeon" << endl;
+        cout << "Select action: ";
+        string action;
+        getline(cin, action);
+        
+        if(cin.fail()){
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            loop = false;
+            cout << "invalid input!" << endl;
+            cout << endl;
+        }
+        
+        else if(action == "1" || action == "Add object" || action == "add object"){
+            
+            char object_choosen;
+            do {
+            cout << endl;
+            cout << "Choose what to add for the dungeon:" << endl;
+            cout << "1) Empty Space" << endl;
+            cout << "2) Wall" << endl;
+            cout << "3) Goal" << endl;
+            cout << "4) Key" << endl;
+            cout << "5) Locked Door" << endl;
+            cout << "7) Enemy" << endl;
+            cout << "8) Health Potion" << endl;
+            cout << "9) Strength Potion" << endl;
+            cout << "9) Defense Potion" << endl;
+            cout << "10) Player" << endl;
+            cout << "Select object by number or name: ";
+            string choice;
+            getline(cin, choice);
+            
+            
+                if (choice == "1" || choice == "Empty Space"){
+                    loop = true;
+                    object_choosen = '-';
                 }
-            
-                int new_playerX = 7;
-                int new_playerY = 0;
-                
-                new_grid[new_playerX][new_playerY] = '$';
-                
-                new_grid[3][0] = '#';
-                new_grid[2][0] = '#';
-                new_grid[1][0] = '#';
-                new_grid[0][0] = '#';
-                
-                new_grid[7][1] = '#';
-                new_grid[6][1] = '#';
-                new_grid[5][1] = '#';
-                
-                new_grid[7][2] = '#';
-                new_grid[7][3] = '#';
-                new_grid[7][4] = '#';
-                new_grid[7][5] = '#';
-                new_grid[7][6] = '#';
-                new_grid[7][7] = '#';
-                
-                new_grid[7][7] = '#';
-                new_grid[6][7] = '#';
-                new_grid[5][7] = '#';
-                new_grid[4][7] = '#';
-                new_grid[3][7] = '#';
-                new_grid[2][7] = '#';
-                
-                new_grid[1][7] = '#';
-                new_grid[0][7] = '#';
-                
-                new_grid[0][1] = '#';
-                new_grid[0][2] = '#';
-                new_grid[0][3] = '#';
-                new_grid[0][4] = 'G';
-                new_grid[1][4] = 'L';
-                new_grid[0][5] = '#';
-                new_grid[0][6] = '#';
-                
-                new_grid[6][2] = 'K';
-                
-                new_grid[1][3] = '#';
-                new_grid[1][5] = '#';
-                new_grid[2][3] = '#';
-                new_grid[2][5] = '#';
-                
-                new_grid[6][3] = 'B';
-                new_grid[5][2] = 'B';
-                
-                
-                
-                //print_new_Grid(new_grid);
-                //pretty_print_Player(P);
-                
-                while (true) {
-                    cout << "=================================" << endl;
-                    
-                    print_new_Grid(new_grid);
-                    pretty_print_Player(P);
-                    cout << "Enter move (w/a/s/d or q to quit): ";
-                    cin >> userInput;
-                    
-                    if (userInput == "q") {
-                        cout << "Exiting game." << endl;
-                        break;
-                    }
-                    
-                    move_Character_new(new_grid, new_playerX, new_playerY, userInput, P);
-                    
-                    if(new_grid[new_playerX][new_playerY] = new_grid[0][4]){
-                        cout << "GAME END!" << endl;
-                        break;
-                    }
-                }//new grid playing
+                else if (choice == "2" || choice == "Wall"){
+                    loop = true;
+                    object_choosen = '#';
+                }
+                else if (choice == "3" || choice == "Goal"){
+                    loop = true;
+                    object_choosen = 'G';
+                }
+                else if (choice == "4" || choice == "Key"){
+                    loop = true;
+                    object_choosen = 'K';
+                }
+                else if (choice == "5" || choice == "Locked Door"){
+                    loop = true;
+                    object_choosen = 'L';
+                }
+                else if (choice == "6" || choice == "Enemy"){
+                    loop = true;
+                    object_choosen = 'E';
+                }
+                else if (choice == "7" || choice == "Health Potion"){
+                    loop = true;
+                    object_choosen = 'H';
+                }
+                else if (choice == "8" || choice == "Strength Potion"){
+                    loop = true;
+                    object_choosen = 'S';
+                }
+                else if (choice == "9" || choice == "Defense Potion") {
+                    loop = true;
+                    object_choosen = 'D';
+                }
+                else if (choice == "10" || choice == "Player"){
+                    loop = true;
+                    object_choosen = '$';
+                }
+            else {
+                loop = false;
+                cout << "Invalid object." << endl;
             }
+                
+        }while(!loop);
+            
+            do {
+                cout << "Enter the coordinates in (x,y) format: ";
+                int x, y;
+                char parenth1_for_obj_choosen = '(';
+                char parenth2_for_obj_choosen = ')';
+                char comma_for_obj_choosen = ',';
+                cin >> parenth1_for_obj_choosen >> x >> comma_for_obj_choosen >> y >> parenth2_for_obj_choosen;
+                
+                if(cin.fail()){
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    loop = false;
+                    cout << "Invalid coordinates!" << endl;
+                    cout << endl;
+                }
+                else{
+                    loop = true;
+                creating_dungeon.setTile(x-1, y-1, object_choosen);
+                }
+            } while (!loop);
+
         }
+    
+        else if (action == "2" || action == "Save dungeon" || action == "save dungeon"){
+            
+            cout << "Enter dungeon name: ";
+            string name;
+            getline(cin, name);
+            creating_dungeon.set_name(name);
+            editing = false;
+        }
+        
     }
+    
+    return creating_dungeon;
 }
 
 
 int main() {
     
-    srand(time(nullptr));
+    vector<GridGame> Dungeons;
     
-    vector<Dungeon>
+    Dungeons.push_back(initialization_for_1());
+    Dungeons.push_back(initialization_for_Tutorial());
+    
     
     bool loop_error = false;
     string choice;
-    //string choice;
+    
     
     do {
         cout << "Welcome to Magic Tower: Revenge of the Warlock Part VII" << endl;
@@ -722,12 +713,13 @@ int main() {
         cout << "2) Design a dungeon" << endl;
         cout << "3) Exit" << endl;
         cout << "enter your choice: ";
-        cin >> choice;
+        getline(cin, choice);
         
-        
+        cout << endl;
     if(cin.fail()){
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        
         loop_error = false;
         cout << "invalid input!" << endl;
         cout << endl;
@@ -743,18 +735,27 @@ int main() {
                     
             cout << "Choose the type of dungeon:" << endl;
             
-            cout << "1) regular dungeon" << endl;
-            cout << "2) tutorial dungeon" << endl;
+            for (int i = 0; i < Dungeons.size() ; i++) {
+                cout << i + 1 << ") " << Dungeons[i].get_Name() << endl;
+            }
+        
+            cout << "Select dungeon: ";
+            int pick;
+            cin >> pick;
+        
+            if (pick > 0 && pick <= Dungeons.size()){
+                playing_dungeon(Dungeons[pick - 1]);
+            }
             
             cout << "enter your choice (in number): ";
-            cin >> choice2;
+            getline(cin, choice2);
             
             cout << endl;
             
             if(cin.fail() ){
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                loop_error2 = true;
+                loop_error2 = false;
                 cout << "invalid input!" << endl;
                 cout << endl;
             }
@@ -762,12 +763,13 @@ int main() {
             else if (choice2 == "1" || choice2 == "regular dungeon"){
                 loop_error2 = true;
                 cout << endl;
-                enter_A_dungeon();
+                
             }
                 
             else if (choice2 == "2" || choice2 == "tutorial dungeon"){
-                cout << "still working on it" << endl;
+                
                 loop_error2 = false;
+                cout << "still working on it" << endl;
                 cout << endl;
                 
             }
@@ -778,10 +780,62 @@ int main() {
         
     else if (choice == "2" || choice == "Design a dungeon" || choice == "design a dungeon"){
         
-        //cout << "NOT WORKING!" << endl;
         loop_error = false;
-        Designing_Dungeon();
-        cout << endl;
+        
+        bool choosing_edit_or_create = false;
+        do {
+            cout << endl;
+            cout << "Whould you like to edit or make a new dungeon:" << endl;
+            cout << "1) Make a dungeon" << endl;
+            cout << "2) Update a dungeon" << endl;
+            cout << "Enter your choice: " ;
+            string choice3;
+            getline(cin, choice3);
+            
+            if(cin.fail()){
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                choosing_edit_or_create = false;
+                cout << "invalid input!" << endl;
+                cout << endl;
+            }
+            
+            else if(choice3 == "1"){
+                choosing_edit_or_create = true;
+                cout << endl;
+                GridGame custom = creating_a_dungeon();
+                Dungeons.push_back(custom);
+            }
+            
+            else if (choice3 == "2"){
+                
+                choosing_edit_or_create = true;
+                
+                cout << "choose which dungeons you would like to update:" << endl;
+                for (int i = 0; i < Dungeons.size() ; i++) {
+                    cout << i + 1 << ") " << Dungeons[i].get_Name() << endl;
+                }
+            
+                cout << "Select dungeon: ";
+                int pick;
+                cin >> pick;
+            
+                if (pick > 0 && pick <= Dungeons.size()){
+                    GridGame updating = editing_dungeon(Dungeons[pick - 1]);
+                    Dungeons.pop_back();
+                    
+                        Dungeons.push_back(updating);
+                    
+                        
+                    
+                }
+                
+                
+            }
+            
+        } while (!choosing_edit_or_create);
+        
+        
     }
         
     else if (choice == "3" || choice == "exit" || choice == "Exit"){
@@ -794,5 +848,9 @@ int main() {
     //char talking = 34;
     return 0;
     //cout << talking << endl;
+    
+
+    
+    
     
 }
