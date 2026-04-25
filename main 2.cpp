@@ -42,7 +42,7 @@ public:
     
     int get_player_Hearts(){
         return player_Hearts;
-    };
+    }
     
     int get_player_defense(){
         return player_defense;
@@ -50,7 +50,7 @@ public:
     
     int get_player_strength(){
         return player_strength;
-    };
+    }
     
     void pretty_print_Player(){
             cout << "Meet your Wizard: " << name << endl;
@@ -62,40 +62,59 @@ public:
             //cout << "potion of Health: ";
             
         }
-    int getting_one_key(){
-        return ++keys;
-        }
+    
     
 };
 
-
-struct Enemy_RUNT{
+class Enemy_RUNT {
+    
+    
+public:
+    
     int Enemy_Hearts;
     int Enemy_Strength;
     int Enemy_Defense;
-
+    
     Enemy_RUNT(){
-            Enemy_Hearts = 1;
-            Enemy_Strength = 1;
-            Enemy_Defense = 1;
-            
-        }
+        Enemy_Hearts = 1;
+        Enemy_Strength = 1;
+        Enemy_Defense = 1;
         
+    }
 };
 
-struct Enemy_GIANT{
+class Enemy_GIANT {
+    
+    
+public:
     int GIANT_Hearts;
     int GIANT_Strength;
     int GIANT_Defense;
 
     Enemy_GIANT(){
             GIANT_Hearts = 3;
-            GIANT_Strength = 2;
-            GIANT_Defense = 2;
+            GIANT_Strength = 3;
+        GIANT_Defense = 3;
             
         }
-        
 };
+    
+class Enemy_Brute{
+public:
+        int Brute_Hearts;
+        int Brute_Strength;
+        int Brute_Defense;
+
+        Enemy_Brute(){
+                Brute_Hearts = 3;
+                Brute_Strength = 2;
+                Brute_Defense = 2;
+                
+            }
+            
+    };
+
+
 
 void Enemy_print(const Enemy_RUNT enemy){
         
@@ -173,6 +192,39 @@ bool GIANT_battle(Player player, Enemy_GIANT enemy) {
     }
     return false;
 }
+    
+    bool Brute_battle(Player player, Enemy_Brute brute) {
+        cout << "you've encountered an enemy!" << endl;
+        while (player.player_Hearts > 0 && brute.Brute_Hearts > 0) {
+            
+            
+            int damage = player.player_strength - brute.Brute_Defense;
+            if (damage > 0) {
+                brute.Brute_Hearts -= damage;
+                cout << "You deal " << damage << " damage to the enemy. Enemy health: " << brute.Brute_Hearts << endl;
+            } else {
+                cout << "Your attack does no damage." << endl;
+            }
+            if (brute.Brute_Hearts <= 0) {
+                cout << "You defeated the enemy!" << endl;
+                return true;
+            }
+            
+            
+            damage = brute.Brute_Strength - player.player_defense;
+            if (damage > 0) {
+                player.player_Hearts -= damage;
+                cout << "Enemy deals " << damage << " damage to you. Your health: " << player.player_Hearts << endl;
+            } else {
+                cout << "Enemy's attack does no damage." << endl;
+            }
+            if (player.player_Hearts <= 0) {
+                cout << "You were defeated! Game Over." << endl;
+                return false;
+            }
+        }
+        return false;
+    }
 
 
 
@@ -187,6 +239,8 @@ public:
     
     Player P = Player("Henry");
     Enemy_RUNT E;
+    Enemy_GIANT EG;
+    Enemy_Brute B;
     
     GridGame(int r, int c, string n, int player_place_X, int player_place_Y) {
         rows = r;
@@ -221,6 +275,10 @@ public:
         return cols;
     }
     
+    char get_player_placement() {
+    return grid[playerX][playerY];
+    }
+    
     void set_name(const string& n){
         name = n;
     }
@@ -229,36 +287,44 @@ public:
         grid[r][c] = type;
     }
     
-    void initialize(){
-        setTile(playerX, playerY, '$');
-        
-        //grid[3][3] = '#';
-        setTile(3, 3, '#');
-       
-        setTile(4, 3, 'K');
-    }
     
     Player get_Player_P(){
         return P;
     }
     
-    bool move(char direction) {
+    bool move(char direction, string move_choice) {
             int nextX = playerX, nextY = playerY;
+        
+        if (move_choice == "1" || move_choice == "WASD" || move_choice == "wasd") {
+            if (direction == 'w') nextX--;      // Up
+                else if (direction == 's') nextX++; // Down
+                else if (direction == 'a') nextY--; // Left
+                else if (direction == 'd') nextY++; // Right
+                else return false; // Invalid input
+        }
+        
+        else if (move_choice == "2" || move_choice == "LRUP" || move_choice == "lrup"){
+            if (direction == 'u' || direction == 'U') nextX--;      // Up
+                else if (direction == 'd' || direction == 'D') nextX++; // Down
+                else if (direction == 'l' || direction == 'L') nextY--; // Left
+                else if (direction == 'r' || direction == 'R') nextY++; // Right
+                else return false; // Invalid input
+        }
 
             // Determine new potential coordinates
-            if (direction == 'w') nextX--;      // Up
-            else if (direction == 's') nextX++; // Down
-            else if (direction == 'a') nextY--; // Left
-            else if (direction == 'd') nextY++; // Right
-            else return false; // Invalid input
+            
         
         if (nextX >= 0 && nextX < rows && nextY >= 0 && nextY < cols) {
-            
             
             if (grid[nextX][nextY] == '#'){
               
             return false;
         }
+            
+            if(grid[nextX][nextY] == 'E'){
+                battle(P, E);
+                
+            }
             
             if(grid[nextX][nextY] == 'K'){
                 P.keys++;
@@ -270,6 +336,66 @@ public:
                 grid[playerX][playerY] = '$';
                 return true;
             }
+            
+            if(grid[nextX][nextY] == 'L'){
+                
+                if(P.keys > 0){
+                    P.keys--;
+                    grid[playerX][playerY] = '-';
+                    playerX = nextX;
+                    playerY = nextY;
+                    grid[playerX][playerY] = '$';
+                    
+                     return true;
+                }
+                else{
+                    return false;
+                }
+            }
+            
+            if(grid[nextX][nextY] == '!'){
+            
+                GIANT_battle(P, EG);
+                
+                grid[playerX][playerY] = '-';
+                playerX = nextX;
+                playerY = nextY;
+                grid[playerX][playerY] = '$';
+                
+                
+                return true;
+            }
+            
+            if(grid[nextX][nextY] == 'P'){
+                P.player_strength += 5;
+                P.player_defense += 5;
+                grid[playerX][playerY] = '-';
+                playerX = nextX;
+                playerY = nextY;
+                grid[playerX][playerY] = '$';
+                
+                return true;
+            }
+            
+            if(grid[nextX][nextY] == 'B'){
+                
+                Brute_battle(P, B);
+                
+                grid[playerX][playerY] = '-';
+                playerX = nextX;
+                playerY = nextY;
+                grid[playerX][playerY] = '$';
+    
+            }
+//            if(grid[nextX][nextY] == 'G'){
+//                cout << "GAME OVER!" << endl;
+//                grid[playerX][playerY] = '-';
+//                playerX = nextX;
+//                playerY = nextY;
+//                grid[playerX][playerY] = '$';
+//                return true;
+//            }
+            
             grid[playerX][playerY] = '-';  // Clear old position
             playerX = nextX;
             playerY = nextY;
@@ -328,47 +454,106 @@ GridGame initialization_for_1(){
     dungeon_1.setTile(dungeon_1.get_playerX(), dungeon_1.get_playerY(), '$');
     
     
-    dungeon_1.setTile(3, 3, '#');
-   
-    dungeon_1.setTile(4, 3, 'K');
+    dungeon_1.setTile(0, 0, '#');
+    dungeon_1.setTile(0, 1, '#');
+    dungeon_1.setTile(0, 2, '#');
+    dungeon_1.setTile(0, 3, '#');
+    dungeon_1.setTile(0, 4, 'G');
+    
+    dungeon_1.setTile(0, 0, '#');
+    dungeon_1.setTile(1, 0, '#');
+    dungeon_1.setTile(2, 0, '#');
+    dungeon_1.setTile(3, 0, '#');
+    dungeon_1.setTile(4, 0, 'P');
+    
+    dungeon_1.setTile(1, 3, '#');
+    dungeon_1.setTile(2, 4, 'L');
+    
+    dungeon_1.setTile(3, 2, '#');
+    dungeon_1.setTile(3, 1, '#');
+    
+    dungeon_1.setTile(2, 3, '-');
+    dungeon_1.setTile(1, 4, '!');
+    
+    dungeon_1.setTile(4, 4, 'K');
+    dungeon_1.setTile(4, 1, 'E');
     return dungeon_1;
 }
 
 GridGame initialization_for_Tutorial(){
-    GridGame dungeon_1 = GridGame(5, 5, "Tutorial", 1, 1);
-    dungeon_1.setTile(dungeon_1.get_playerX(), dungeon_1.get_playerY(), '$');
+    GridGame tutorial = GridGame(7, 7, "Tutorial", 1, 1);
+    tutorial.setTile(tutorial.get_playerX(), tutorial.get_playerY(), '$');
     
+    tutorial.setTile(0, 0, '#');
+    tutorial.setTile(0, 1, '#');
+    tutorial.setTile(0, 2, '#');
+    tutorial.setTile(0, 3, '#');
+    tutorial.setTile(0, 0, 'G');
     
-    dungeon_1.setTile(3, 3, '#');
-   
-    dungeon_1.setTile(4, 3, 'K');
-    return dungeon_1;
+    tutorial.setTile(0, 0, '#');
+    tutorial.setTile(1, 0, '#');
+    tutorial.setTile(2, 0, '#');
+    tutorial.setTile(3, 0, '#');
+    tutorial.setTile(4, 0, 'P');
+    
+    tutorial.setTile(1, 3, '#');
+    tutorial.setTile(2, 4, 'L');
+    
+    tutorial.setTile(3, 2, '#');
+    tutorial.setTile(3, 1, '#');
+    
+    tutorial.setTile(2, 3, '-');
+    tutorial.setTile(1, 4, '!');
+    
+    tutorial.setTile(4, 4, 'k');
+    tutorial.setTile(4, 1, 'E');
+    
+
+    return tutorial;
 }
 
-void playing_dungeon(GridGame g){
+void playing_dungeon(GridGame g, string moving_choice){
     
 
     char userInput;
     
     while (true) {
         cout << "=================================" << endl;
-        
+        cout << g.get_playerX() << endl;
+        cout << g. get_playerY() << endl;
+        cout << endl;
+        cout << endl;
                 g.display_for_normal();
         g.get_Player_P().pretty_print_Player();
         
+        if(moving_choice == "1" || moving_choice == "WASD" || moving_choice == "wasd"){
+            cout << "Enter move (w/a/s/d or q to quit): ";
+        }
         
-        cout << "Enter move (w/a/s/d or q to quit): ";
+        else if(moving_choice == "2" || moving_choice == "LRUP" || moving_choice == "lrup"){
+            cout << "Enter move (U/D/L/R or q to quit): ";
+        }
+        
         cin >> userInput;
-        
-        if (userInput == 'q') {
+        if (userInput == 'q' || userInput == 'Q') {
             cout << "Exiting game." << endl;
             break;
         }
+        if(g.get_player_placement() == 'G'){
+                    cout << "GAME OVER!" << endl;
+                    break;
+                }
         
-        g.move(userInput);
+        g.move(userInput, moving_choice);
+        
+        
     }
     
 }
+    
+    void doing_the_tutorial(GridGame T){
+        
+    }
 
 GridGame editing_dungeon(GridGame Updating_grid){
     
@@ -703,10 +888,11 @@ int main() {
     
     
     bool loop_error = false;
-    string choice;
+    
     
     
     do {
+        string choice;
         cout << "Welcome to Magic Tower: Revenge of the Warlock Part VII" << endl;
          
         cout << "1) Enter a dungeon" << endl;
@@ -729,9 +915,41 @@ int main() {
         loop_error = false;
         cout << endl;
         
-        bool loop_error2 = false;
+        string move_choice;
         do {
-            string choice2;
+            
+            
+            cout << "Choose the movement you would like to use: " << endl;
+            cout << "1) WASD" << endl;
+            cout << "2) LRUP" << endl;
+            cout << "enter your choice: ";
+            cin >> move_choice;
+            
+            if(cin.fail() ){
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                loop_error = false;
+                cout << "invalid input!" << endl;
+                cout << endl;
+            }
+            
+            else if (move_choice == "1" || move_choice == "WASD" || move_choice == "wasd"){
+                loop_error = true;
+                
+                cout << endl;
+                
+            }
+                
+            else if (move_choice == "2" || move_choice == "LRUP" || move_choice == "lrup"){
+                loop_error = true;
+                
+                cout << endl;
+            }
+            
+        } while (!loop_error);
+        
+        do {
+            int choosing_dungeon;
                     
             cout << "Choose the type of dungeon:" << endl;
             
@@ -740,41 +958,27 @@ int main() {
             }
         
             cout << "Select dungeon: ";
-            int pick;
-            cin >> pick;
-        
-            if (pick > 0 && pick <= Dungeons.size()){
-                playing_dungeon(Dungeons[pick - 1]);
-            }
+            cin >> choosing_dungeon;
+            //cin >> choosing_dungeon;
             
-            cout << "enter your choice (in number): ";
-            getline(cin, choice2);
-            
-            cout << endl;
-            
-            if(cin.fail() ){
+            if(cin.fail() || choosing_dungeon < 1 || choosing_dungeon > Dungeons.size()){
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                loop_error2 = false;
+                loop_error = false;
                 cout << "invalid input!" << endl;
                 cout << endl;
             }
+
             
-            else if (choice2 == "1" || choice2 == "regular dungeon"){
-                loop_error2 = true;
+            else {
+                loop_error = false;
+                playing_dungeon(Dungeons[choosing_dungeon - 1], move_choice);
                 cout << endl;
-                
             }
-                
-            else if (choice2 == "2" || choice2 == "tutorial dungeon"){
-                
-                loop_error2 = false;
-                cout << "still working on it" << endl;
-                cout << endl;
-                
-            }
+
+
             
-        } while (!loop_error2);
+        } while (!loop_error);
         
     }
         
@@ -824,18 +1028,11 @@ int main() {
                     GridGame updating = editing_dungeon(Dungeons[pick - 1]);
                     Dungeons.pop_back();
                     
-                        Dungeons.push_back(updating);
-                    
-                        
-                    
+                    Dungeons.push_back(updating);
                 }
-                
-                
             }
             
         } while (!choosing_edit_or_create);
-        
-        
     }
         
     else if (choice == "3" || choice == "exit" || choice == "Exit"){
@@ -846,6 +1043,7 @@ int main() {
         
     } while (!loop_error);
     //char talking = 34;
+    cout << endl;
     return 0;
     //cout << talking << endl;
     
