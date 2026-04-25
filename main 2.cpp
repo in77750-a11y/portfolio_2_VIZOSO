@@ -7,6 +7,8 @@
 
 #include <iostream>
 #include <vector>
+#include <chrono>
+#include <thread>
 
 using namespace std;
 
@@ -276,7 +278,11 @@ public:
     }
     
     char get_player_placement() {
-    return grid[playerX][playerY];
+        return grid[playerX][playerY];
+    }
+    
+    char get_tile(int r, int c){
+        return grid[r][c];
     }
     
     void set_name(const string& n){
@@ -387,14 +393,49 @@ public:
                 grid[playerX][playerY] = '$';
     
             }
-//            if(grid[nextX][nextY] == 'G'){
-//                cout << "GAME OVER!" << endl;
-//                grid[playerX][playerY] = '-';
-//                playerX = nextX;
-//                playerY = nextY;
-//                grid[playerX][playerY] = '$';
-//                return true;
-//            }
+            
+            if(grid[nextX][nextY] == 'H'){
+                P.player_Hearts += 5;
+                Brute_battle(P, B);
+                
+                grid[playerX][playerY] = '-';
+                playerX = nextX;
+                playerY = nextY;
+                grid[playerX][playerY] = '$';
+    
+            }
+            
+            if(grid[nextX][nextY] == 'S'){
+                P.player_strength += 5;
+                Brute_battle(P, B);
+                
+                grid[playerX][playerY] = '-';
+                playerX = nextX;
+                playerY = nextY;
+                grid[playerX][playerY] = '$';
+    
+            }
+            
+            if(grid[nextX][nextY] == 'D'){
+                P.player_defense += 5;
+                Brute_battle(P, B);
+                
+                grid[playerX][playerY] = '-';
+                playerX = nextX;
+                playerY = nextY;
+                grid[playerX][playerY] = '$';
+    
+            }
+            
+            if(grid[nextX][nextY] == 'G'){
+                cout << "GAME OVER!" << endl;
+                cout << "Looks like youve comepleted the dungeon, either quit or keep exploring!" << endl;
+                grid[playerX][playerY] = '-';
+                playerX = nextX;
+                playerY = nextY;
+                grid[playerX][playerY] = '$';
+                return true;
+            }
             
             grid[playerX][playerY] = '-';  // Clear old position
             playerX = nextX;
@@ -505,8 +546,10 @@ GridGame initialization_for_Tutorial(){
     tutorial.setTile(2, 3, '-');
     tutorial.setTile(1, 4, '!');
     
-    tutorial.setTile(4, 4, 'k');
+    tutorial.setTile(4, 4, 'K');
     tutorial.setTile(4, 1, 'E');
+    
+    tutorial.setTile(5, 5, 'B');
     
 
     return tutorial;
@@ -519,10 +562,12 @@ void playing_dungeon(GridGame g, string moving_choice){
     
     while (true) {
         cout << "=================================" << endl;
-        cout << g.get_playerX() << endl;
-        cout << g. get_playerY() << endl;
-        cout << endl;
-        cout << endl;
+//        cout << g.get_playerX() << endl;
+//        cout << g. get_playerY() << endl;
+//        cout << g.get_player_placement() << endl;
+//        cout << g.get_tile(0,4) << endl;
+//        cout << endl;
+        
                 g.display_for_normal();
         g.get_Player_P().pretty_print_Player();
         
@@ -539,19 +584,88 @@ void playing_dungeon(GridGame g, string moving_choice){
             cout << "Exiting game." << endl;
             break;
         }
-        if(g.get_player_placement() == 'G'){
-                    cout << "GAME OVER!" << endl;
-                    break;
-                }
         
         g.move(userInput, moving_choice);
         
-        
+//        if(g.get_tile == g.get_player_placement()){
+//                cout << "GAME OVER!" << endl;
+//                            break;
+//                        }
+
     }
     
 }
     
-    void doing_the_tutorial(GridGame T){
+    void doing_the_tutorial(GridGame T, string moving_choice){
+        
+        char userInput;
+        
+        cout << "=================================" << endl;
+        T.display_for_normal();
+        T.get_Player_P().pretty_print_Player();
+        cout << endl;
+        cout << "this is how the board will look like when you choose a dungeon to play" << endl;
+        cout << endl;
+        cout << endl;
+        this_thread::sleep_for(chrono::seconds(5));
+        
+        if(moving_choice == "1" || moving_choice == "WASD" || moving_choice == "wasd"){
+            cout << "Enter move (w/a/s/d or q to quit): ";
+            cout << "this is how your input will be for moving the player if you choose wasd" << endl;
+            this_thread::sleep_for(chrono::seconds(5));
+            cout << endl;
+            cout << "try it: " << endl;
+            cout << endl;
+            this_thread::sleep_for(chrono::seconds(2));
+            cout << "Enter move (w/a/s/d or q to quit): ";
+        }
+        
+        else if(moving_choice == "2" || moving_choice == "LRUP" || moving_choice == "lrup"){
+            cout << "Enter move (U/D/L/R or q to quit): ";
+            cout << "this is how your input will be for moving the player if you choose wasd" << endl;
+            this_thread::sleep_for(chrono::seconds(5));
+            cout << endl;
+            cout << "try it: " << endl;
+            cout << endl;
+            this_thread::sleep_for(chrono::seconds(2));
+            cout << "Enter move (U/D/L/R or q to quit): ";
+        }
+        
+        cin >> userInput;
+        if (userInput == 'q' || userInput == 'Q') {
+            cout << "Exiting game." << endl;
+            cout << "This will pop up if you decide to quit, but you still need to know a few things!" << endl;
+            this_thread::sleep_for(chrono::seconds(2));
+        }
+        
+        T.move(userInput, moving_choice);
+        cout << "=================================" << endl;
+        T.display_for_normal();
+        T.get_Player_P().pretty_print_Player();
+        this_thread::sleep_for(chrono::seconds(2));
+        cout << endl;
+        cout << "Good job, looks like your getting the hang of it, now here are what the symbols mean on the board:" << endl;
+        cout << endl;
+        this_thread::sleep_for(chrono::seconds(2));
+        
+        cout << "#: Wall" << endl;
+        cout << "$: Player" << endl;
+        cout << "P: Potion that increases strength and defense" << endl;
+        cout << "L: Locked door" << endl;
+        cout << "K: Key" << endl;
+        cout << "E: Enemy" << endl;
+        cout << "G: Goal" << endl;
+        cout << "!: Giant" << endl;
+        cout << "B: Brute" << endl;
+        cout << "H: Potion of Health" << endl;
+        cout << "S: Potion of Strenght" << endl;
+        cout << "D: Potion of Defense" << endl;
+        cout << endl;
+        cout << "Take your time to memorize what the symbols mean." << endl;
+        this_thread::sleep_for(chrono::seconds(5));
+        
+        cout << endl;
+        cout << "Look like you got the hand of it so far, now try it out!" << endl;
         
     }
 
@@ -788,7 +902,6 @@ GridGame creating_a_dungeon(){
             cout << "8) Health Potion" << endl;
             cout << "9) Strength Potion" << endl;
             cout << "9) Defense Potion" << endl;
-            cout << "10) Player" << endl;
             cout << "Select object by number or name: ";
             string choice;
             getline(cin, choice);
@@ -830,10 +943,7 @@ GridGame creating_a_dungeon(){
                     loop = true;
                     object_choosen = 'D';
                 }
-                else if (choice == "10" || choice == "Player"){
-                    loop = true;
-                    object_choosen = '$';
-                }
+                
             else {
                 loop = false;
                 cout << "Invalid object." << endl;
@@ -889,8 +999,6 @@ int main() {
     
     bool loop_error = false;
     
-    
-    
     do {
         string choice;
         cout << "Welcome to Magic Tower: Revenge of the Warlock Part VII" << endl;
@@ -900,12 +1008,11 @@ int main() {
         cout << "3) Exit" << endl;
         cout << "enter your choice: ";
         getline(cin, choice);
-        
         cout << endl;
+        
     if(cin.fail()){
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        
         loop_error = false;
         cout << "invalid input!" << endl;
         cout << endl;
@@ -917,8 +1024,7 @@ int main() {
         
         string move_choice;
         do {
-            
-            
+        
             cout << "Choose the movement you would like to use: " << endl;
             cout << "1) WASD" << endl;
             cout << "2) LRUP" << endl;
@@ -948,7 +1054,7 @@ int main() {
             
         } while (!loop_error);
         
-        do {
+        
             int choosing_dungeon;
                     
             cout << "Choose the type of dungeon:" << endl;
@@ -968,18 +1074,23 @@ int main() {
                 cout << "invalid input!" << endl;
                 cout << endl;
             }
+        
+            else if(choosing_dungeon == 2){
+                loop_error = false;
+                 doing_the_tutorial(initialization_for_Tutorial(), move_choice);
+            }
 
             
             else {
                 loop_error = false;
+                
+                    cout << "Starting the Dungeon..." << endl;
+                    
+                    this_thread::sleep_for(chrono::seconds(5));
+                    
                 playing_dungeon(Dungeons[choosing_dungeon - 1], move_choice);
                 cout << endl;
             }
-
-
-            
-        } while (!loop_error);
-        
     }
         
     else if (choice == "2" || choice == "Design a dungeon" || choice == "design a dungeon"){
