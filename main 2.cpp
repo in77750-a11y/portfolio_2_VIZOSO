@@ -1075,7 +1075,7 @@ int main() {
                     
                     if(cin.fail() || choosing_dungeon < 1 || choosing_dungeon > Dungeons.size()){
                         cin.clear();
-                        //cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
                         loop_error = false;
                         cout << "invalid input!" << endl;
                         cout << endl;
