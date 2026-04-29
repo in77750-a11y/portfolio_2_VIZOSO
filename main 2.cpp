@@ -57,10 +57,10 @@ public:
     void pretty_print_Player(){
             cout << "Meet your Wizard: " << name << endl;
             cout << "Stats: " << endl;
-            cout << "Hearts: " << player_Hearts << endl;
-            cout << "Strength: " << player_strength << endl;
-            cout << "defense: " << player_defense << endl;
-            cout << "Keys: " << keys << endl;
+            cout << "Hearts: " << player_Hearts;
+            cout << "   Strength: " << player_strength;
+            cout << "   Defense: " << player_defense;
+            cout << "   Keys: " << keys << endl;
             //cout << "potion of Health: ";
             
         }
@@ -460,7 +460,7 @@ public:
     void display_for_dungeon_creation(){
         
         
-        for (int i = 0; i < cols; i++){
+        for (int i = 0; i < rows; i++){
             cout << "      " << i;
         }
         
@@ -470,14 +470,14 @@ public:
         
         cout << dashes << endl;
         
-        vector<char> row;
+        vector<char> cols;
         
         char alphabet_start = '0';
         
-        for (vector<char> row : grid) {
+        for (vector<char> cols : grid) {
             cout << alphabet_start << '|';
             alphabet_start += 1;
-            for (char c : row) {
+            for (char c : cols) {
                 cout << "    " << c << "  " ;
             }
             cout << endl;
@@ -803,7 +803,7 @@ GridGame creating_a_dungeon(){
     do {
         
         cout << endl;
-        cout << "Enter rows: ";
+        cout << "Enter colums: ";
         cin >> rows_C;
         
         if (cin.fail() || rows_C < 1) {
@@ -822,7 +822,7 @@ GridGame creating_a_dungeon(){
         cout << endl;
         
     do {
-        cout << "Enter colums: ";
+        cout << "Enter rows: ";
         cin >> cols_C;
 
         if (cin.fail()|| cols_C < 1) {
