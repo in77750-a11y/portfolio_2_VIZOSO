@@ -9,6 +9,7 @@
 #include <vector>
 #include <chrono>
 #include <thread>
+#include <string>
 
 using namespace std;
 
@@ -460,7 +461,7 @@ public:
     void display_for_dungeon_creation(){
         
         
-        for (int i = 0; i < rows; i++){
+        for (int i = 0; i < cols; i++){
             cout << "      " << i;
         }
         
@@ -563,13 +564,8 @@ void playing_dungeon(GridGame g, string moving_choice){
     bool playing = true;
     while (playing) {
         cout << "=================================" << endl;
-//        cout << g.get_playerX() << endl;
-//        cout << g. get_playerY() << endl;
-//        cout << g.get_player_placement() << endl;
-//        cout << g.get_tile(0,4) << endl;
-//        cout << endl;
-        
-                g.display_for_normal();
+
+        g.display_for_normal();
         g.get_Player_P().pretty_print_Player();
         
         if(moving_choice == "1" || moving_choice == "WASD" || moving_choice == "wasd"){
@@ -685,8 +681,9 @@ GridGame editing_dungeon(GridGame Updating_grid){
         cout << "2) Save dungeon" << endl;
         cout << "Select action: ";
         string action;
-        getline(cin, action);
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        getline(cin, action);
+        
         
         if(cin.fail() && action != "1" && action != "Add object" && action != "add object" && action != "2" && action != "Save dungeon" && action != "save dungeon"){
             cin.clear();
@@ -715,7 +712,8 @@ GridGame editing_dungeon(GridGame Updating_grid){
             string choice;
             getline(cin, choice);
             
-            
+                
+                
                 if (choice == "1" || choice == "Empty Space"){
                     loop_updating = true;
                     object_choosen = '-';
@@ -875,9 +873,9 @@ GridGame creating_a_dungeon(){
         cout << "1) Add object" << endl;
         cout << "2) Save dungeon" << endl;
         cout << "Select action: ";
-        
-        getline(cin, action);
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        getline(cin, action);
+        
         
         if(cin.fail() && action != "1" && action != "Add object" && action != "add object" && action != "2" && action != "Save dungeon" && action != "save dungeon"){
             cin.clear();
@@ -995,198 +993,220 @@ int main() {
     
     Dungeons.push_back(initialization_for_1());
     Dungeons.push_back(initialization_for_Tutorial());
-    
-    
-    
-    
-    bool loop_error = false;
-    
+    bool entire_game = true;
+    bool FULL_game = true;
     do{
+    
+    do {
+        string choice;
+        cout << "Welcome to Magic Tower: Revenge of the Warlock Part VII" << endl;
+
+        cout << "1) Enter a dungeon" << endl;
+        cout << "2) Design a dungeon" << endl;
+        cout << "3) Exit" << endl;
+        cout << "enter your choice: ";
+        getline(cin, choice);
+        cout << endl;
         
-        do {
-            string choice;
-            cout << "Welcome to Magic Tower: Revenge of the Warlock Part VII" << endl;
+        if(cin.fail() && choice != "1" && choice != "Enter a dungeon" && choice != "enter a dungeon" && choice != "2" && choice != "Design a dungeon" && choice != "design a dungeon" && choice != "3" && choice != "exit" && choice != "Exit"){
+            cin.clear();
             
-            cout << "1) Enter a dungeon" << endl;
-            cout << "2) Design a dungeon" << endl;
-            cout << "3) Exit" << endl;
-            cout << "enter your choice: ";
-            getline(cin, choice);
-            
-            
-            if(cin.fail() && choice != "1" && choice != "Enter a dungeon" && choice != "enter a dungeon" && choice != "2" && choice != "Design a dungeon" && choice != "design a dungeon" && choice != "3" && choice != "exit" && choice != "Exit"){
-                cin.clear();
-                //cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                loop_error = false;
-                cout << "invalid input!" << endl;
-                cout << endl;
+            entire_game = true;
+            cout << "invalid input!" << endl;
+            cout << endl;
             }
-            //use 0-4
-            else if(choice == "1" || choice == "Enter a dungeon" || choice == "enter a dungeon"){
-                loop_error = true;
+        
+        
+        
+        else if (choice == "Enter a dungeon" || choice == "1" || choice == "enter a dungeon"){
+            entire_game = true;
+            cout << endl;
+            
+            string move_choice;
+            do {
+                cout << "Choose the movement you would like to use: " << endl;
+                cout << "1) WASD" << endl;
+                cout << "2) LRUP" << endl;
+                cout << "enter your choice: ";
+                getline(cin, move_choice);
+                
+                if(cin.fail() && move_choice == "1" && move_choice == "WASD" && move_choice == "wasd" && move_choice == "2" && move_choice == "LRUP" && move_choice == "lrup"){
+                    cin.clear();
+                    //cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    entire_game = true;
+                    cout << "invalid input!" << endl;
+                    cout << endl;
+                }
+                
+                else if (move_choice == "1" || move_choice == "WASD" || move_choice == "wasd"){
+                    entire_game = false;
+                    cout << endl;
+                }
+                
+                else if (move_choice == "2" || move_choice == "LRUP" || move_choice == "lrup"){
+                    entire_game = false;
+                    cout << endl;
+                }
+                
+            } while (entire_game);
+            
+            int choosing_dungeon;
+            do {
+                cout << "Choose the type of dungeon:" << endl;
+        
+                for (int i = 0; i < Dungeons.size() ; i++) {
+                    cout << i + 1 << ") " << Dungeons[i].get_Name() << endl;
+                }
+        
+                cout << "Select dungeon: ";
+                
+                cin >> choosing_dungeon;
+                //cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        
+                if(cin.fail() || choosing_dungeon < 1 || choosing_dungeon > Dungeons.size()){
+                    cin.clear();
+                    //cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    entire_game = true;
+                    cout << "invalid input!" << endl;
+                    cout << endl;
+                }
+                
+                if(choosing_dungeon == 2 ){
+                    entire_game = false;
+                    doing_the_tutorial(initialization_for_Tutorial(), move_choice);
+                }
+                
+                
+                else {
+                    entire_game = false;
+                    
+                    cout << "Starting the Dungeon..." << endl;
+                    
+                    this_thread::sleep_for(chrono::seconds(5));
+                    
+                    playing_dungeon(Dungeons[choosing_dungeon - 1], move_choice);
+                    cout << endl;
+                }
+            } while (entire_game);
+        }
+        
+        else if(choice == "Design a dungeon" || choice == "2" || choice == "design a dungeon") {
+            entire_game = true;
+            
+            bool choosing_edit_or_create = false;
+            do {
                 cout << endl;
+                cout << "Whould you like to edit or make a new dungeon:" << endl;
+                cout << "1) Make a dungeon" << endl;
+                cout << "2) Update a dungeon" << endl;
+                cout << "Enter your choice: " ;
+                string choice3;
+                getline(cin, choice3);
+                cout << endl;
+                if(cin.fail()){
+                    cin.clear();
+                    choosing_edit_or_create = false;
+                    cout << "invalid input!" << endl;
+                    cout << endl;
+                }
                 
-                string move_choice;
-                do {
-                    
-                    cout << "Choose the movement you would like to use: " << endl;
-                    cout << "1) WASD" << endl;
-                    cout << "2) LRUP" << endl;
-                    cout << "enter your choice: ";
-                    getline(cin, move_choice);
-                    
-                    
-                    if(cin.fail() && move_choice == "1" && move_choice == "WASD" && move_choice == "wasd" && move_choice == "2" && move_choice == "LRUP" && move_choice == "lrup"){
-                        cin.clear();
-                        //cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                        loop_error = false;
-                        cout << "invalid input!" << endl;
-                        cout << endl;
-                    }
-                    
-                    else if (move_choice == "1" || move_choice == "WASD" || move_choice == "wasd"){
-                        loop_error = true;
-                        
-                        cout << endl;
-                        
-                    }
-                    
-                    else if (move_choice == "2" || move_choice == "LRUP" || move_choice == "lrup"){
-                        loop_error = true;
-                        
-                        cout << endl;
-                    }
-                    
-                } while (!loop_error);
+                else if(choice3 == "1" || choice3 == "make a dungeon" || choice3 == "Make a dungeon"){
+                    choosing_edit_or_create = true;
+                    cout << endl;
+                    GridGame custom = creating_a_dungeon();
+                    Dungeons.push_back(custom);
+                }
                 
-                
-                int choosing_dungeon;
-                //string choosing_dungeon;
-                do {
-                    cout << "Choose the type of dungeon:" << endl;
+                else if (choice3 == "2" || choice3 == "update a dungeon" || choice3 == "Update a dungeon"){
                     
+                    choosing_edit_or_create = true;
+                    
+                    cout << "choose which dungeons you would like to update:" << endl;
                     for (int i = 0; i < Dungeons.size() ; i++) {
                         cout << i + 1 << ") " << Dungeons[i].get_Name() << endl;
                     }
                     
                     cout << "Select dungeon: ";
-                    //getline(cin, choosing_dungeon);
-                    cin >> choosing_dungeon;
+                    int pick;
+                    cin >> pick;
                     
-                    if(cin.fail() || choosing_dungeon < 1 || choosing_dungeon > Dungeons.size()){
-                        cin.clear();
-                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                        loop_error = false;
-                        cout << "invalid input!" << endl;
-                        cout << endl;
-                    }
-                    
-                    else if(choosing_dungeon == 2 ){
-                        loop_error = true;
-                        doing_the_tutorial(initialization_for_Tutorial(), move_choice);
-                    }
-                    
-                    
-                    else {
-                        loop_error = true;
+                    if (pick > 0 && pick <= Dungeons.size()){
+                        GridGame updating = editing_dungeon(Dungeons[pick - 1]);
+                        Dungeons.pop_back();
                         
-                        cout << "Starting the Dungeon..." << endl;
-                        
-                        this_thread::sleep_for(chrono::seconds(5));
-                        
-                        playing_dungeon(Dungeons[choosing_dungeon - 1], move_choice);
-                        cout << endl;
+                        Dungeons.push_back(updating);
                     }
-                    
-                }while(!loop_error);
+                }
                 
-            }
+            } while (!choosing_edit_or_create);
             
-            else if (choice == "2" || choice == "Design a dungeon" || choice == "design a dungeon"){
-                
-                loop_error = false;
-                
-                bool choosing_edit_or_create = false;
-                do {
-                    cout << endl;
-                    cout << "Whould you like to edit or make a new dungeon:" << endl;
-                    cout << "1) Make a dungeon" << endl;
-                    cout << "2) Update a dungeon" << endl;
-                    cout << "Enter your choice: " ;
-                    string choice3;
-                    getline(cin, choice3);
-                    
-                    if(cin.fail()){
-                        cin.clear();
-                        choosing_edit_or_create = false;
-                        cout << "invalid input!" << endl;
-                        cout << endl;
-                    }
-                    
-                    else if(choice3 == "1" || choice3 == "make a dungeon" || choice3 == "Make a dungeon"){
-                        choosing_edit_or_create = true;
-                        cout << endl;
-                        GridGame custom = creating_a_dungeon();
-                        Dungeons.push_back(custom);
-                    }
-                    
-                    else if (choice3 == "2" || choice3 == "update a dungeon" || choice3 == "Update a dungeon"){
-                        
-                        choosing_edit_or_create = true;
-                        
-                        cout << "choose which dungeons you would like to update:" << endl;
-                        for (int i = 0; i < Dungeons.size() ; i++) {
-                            cout << i + 1 << ") " << Dungeons[i].get_Name() << endl;
-                        }
-                        
-                        cout << "Select dungeon: ";
-                        int pick;
-                        cin >> pick;
-                        
-                        if (pick > 0 && pick <= Dungeons.size()){
-                            GridGame updating = editing_dungeon(Dungeons[pick - 1]);
-                            Dungeons.pop_back();
-                            
-                            Dungeons.push_back(updating);
-                        }
-                    }
-                    
-                } while (!choosing_edit_or_create);
-            }
-            
-            else if (choice == "3" || choice == "exit" || choice == "Exit"){
-                loop_error = true;
-                cout << endl;
-                return 0;
-            }
-            
-        } while (!loop_error);
+            cout << endl;
+        }
         
-        cout << endl;
-        cout << "Would you like to keep going or end the game at once?" << endl;
-        cout << "Here are your options" << endl;
+        
+        
+        else if (choice == "Exit" || choice == "3" || choice == "exit"){
+            entire_game = false;
+            cout << endl;
+        }
+        
+//        do{
+//            string keep_quit;
+//            cout << "Would you like to continue or quit?" << endl;
+//            cout << "1) Keep going" << endl;
+//            cout << "2) Quit" << endl;
+//            cout << "enter your choice: ";
+//            cin >> keep_quit;
+//            
+//            if(cin.fail() && keep_quit != "Keep going" && keep_quit != "Quit" && keep_quit != "1" && keep_quit != "2" && keep_quit != "keep going" && keep_quit != "quit"){
+//                cin.clear();
+//                //cin.ignore(numeric_limits<streamsize>::max(), '\n');
+//                entire_game = true;
+//                cout << "invalid input!" << endl;
+//                cout << endl;
+//            }
+//            
+//            else if (keep_quit == "Keep going" || keep_quit == "1" || keep_quit == "keep going"){
+//                entire_game = true;
+//            }
+//            
+//            else if (keep_quit == "Quit" || keep_quit == "2" || keep_quit == "quit"){
+//                entire_game = false;
+//            }
+//            
+//        }while(entire_game);
+        
+        
+    } while (entire_game);
+    
+    
+        string keep_quit;
+        cout << "Would you like to continue or quit?" << endl;
         cout << "1) Keep going" << endl;
         cout << "2) Quit" << endl;
-        cout << "Enter your choice here: ";
-        string entire_game;
-        getline(cin, entire_game);
-        
-        if (cin.fail() && entire_game != "1" && entire_game != "Keep going" && entire_game != "keep going" && entire_game != "2" && entire_game != "Quit" && entire_game != "quit" ) {
+        cout << "enter your choice: ";
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        getline(cin , keep_quit);
+        cout << endl;
+        cout << endl;
+        if(cin.fail() && keep_quit != "Keep going" && keep_quit != "Quit" && keep_quit != "1" && keep_quit != "2" && keep_quit != "keep going" && keep_quit != "quit"){
             cin.clear();
-            //cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            loop_error = false;
+            
+            FULL_game = true;
             cout << "invalid input!" << endl;
             cout << endl;
         }
         
-        else if (entire_game == "1" || entire_game == "Keep going" || entire_game == "keep going"){
-            loop_error = false;
-        }
-        else{
-            loop_error = true;
+        else if (keep_quit == "Keep going" || keep_quit == "1" || keep_quit == "keep going"){
+            FULL_game = true;
         }
         
-    }while (!loop_error);
+        else if (keep_quit == "Quit" || keep_quit == "2" || keep_quit == "quit"){
+            FULL_game = false;
+        }
+        
+    }while(FULL_game);
+        
     
 
     
